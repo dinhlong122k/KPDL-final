@@ -1,12 +1,8 @@
 package com.example.demo.api;
 
-
-import com.example.demo.AWS.AmazoneS3Util;
-import com.example.demo.Common.LSB;
 import com.example.demo.Common.Response;
 import com.example.demo.service.HashService;
 import com.example.demo.service.LSBService;
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @RestController
@@ -30,10 +25,10 @@ public class Rest {
     private LSBService lsbService;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json",value = "/encryptText")
-    public ResponseEntity<Response> HashText(@RequestBody String text) throws Exception{
+    public ResponseEntity<Response> HashText(@RequestBody Response text) throws Exception{
         Response response=new Response();
         try{
-            response.setText(service.HashText(text));
+            response.setText(service.HashText(text.getText()));
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception ex){
@@ -57,11 +52,11 @@ public class Rest {
 //    }
 
     @RequestMapping(value = "decryptTextPV",method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<Response> getDecryptTextWithPrivate_Key(@RequestBody String hashText) throws Exception{
+    public ResponseEntity<Response> getDecryptTextWithPrivate_Key(@RequestBody Response hashText) throws Exception{
         Response response=new Response();
 
         try{
-            String text_decrypted=service.getTextDecryptPrivate_key(hashText);
+            String text_decrypted=service.getTextDecryptPrivate_key(hashText.getText());
             response.setText(text_decrypted);
             return new ResponseEntity<>(response,HttpStatus.OK);
         }catch (Exception e){
