@@ -72,13 +72,15 @@ public class Rest {
         try{
             String ext1= FilenameUtils.getExtension(multiPartFile.getOriginalFilename());
 //            AmazoneS3Util.uploadFile("thcs",multiPartFile.getOriginalFilename(),multiPartFile.getInputStream());
-            if(ext1.equals("jpg") || ext1.equals("png")){
+            if(ext1.equals("jpg") || ext1.equals("png") || ext1.equals("jpeg")){
                 String url= service.addWaterMarkImage(multiPartFile);
                 response.setText(url);
             }
 
             else if(ext1.equals("pdf")){
                 service.addWatermarkPDF(multiPartFile);
+            }else{
+                response.setText("Not correct extension");
             }
         }catch (Exception ex){
             ex.printStackTrace();
