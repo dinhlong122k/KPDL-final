@@ -6,30 +6,16 @@ import com.example.demo.AWS.Contants;
 import com.example.demo.Common.Text;
 import com.example.demo.Utils.RSAUtils;
 import com.example.demo.repository.TextRepository;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPageEventHelper;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.mock.web.MockMultipartFile;
-
-import javax.crypto.Cipher;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.security.*;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 @Service
@@ -98,7 +84,6 @@ public class HashService {
     @Transactional
     public String getTextDecryptPrivate_key(String hash_text) throws Exception{
         String decrypt = "";
-        //String hash_text1="d8Xvkm+qe6oRyuNbw/86LnU4RhQuunWs5dZVjXpdNuGCuKM8MbX33cCkAxwWtCPbOPrkK6rCW5Vj69AKBzfmcg==";
         try{
             Text text=textRepo.getPrivate_Key(hash_text);
             decrypt=RSAUtils.decrypt(text.getHash_text(),text.getPrivate_key());
@@ -138,20 +123,6 @@ public class HashService {
             InputStream is=new ByteArrayInputStream(baos.toByteArray());
 
             AmazoneS3Util.uploadFile("thcs_watermark",fileName,is);
-
-//            File file=new File("D:/image/watermark.png");
-//            ImageIO.write(bufImg,"png",file);
-//            ByteArrayOutputStream baos =new ByteArrayOutputStream();
-//            ImageIO.write(bufImg, "png",baos);
-//            baos.flush();
-//
-//            String fileName = FirebaseService.generateFileName(multipartFile);
-//            MultipartFile multipartFile1 = new MultipartImage(baos.toByteArray(),fileName,multipartFile.getOriginalFilename());
-//
-//            StorageService upload =new StorageService();
-//            FileDTO dto = upload.uploadFile(multipartFile1);
-//
-//            url = dto.getFileDownloadUri();
 
         }catch (Exception ex){
             ex.printStackTrace();

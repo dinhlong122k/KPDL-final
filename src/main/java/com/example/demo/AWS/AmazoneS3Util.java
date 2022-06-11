@@ -2,6 +2,11 @@ package com.example.demo.AWS;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -12,14 +17,10 @@ import java.util.*;
 
 public class AmazoneS3Util {
 
-    private static final String BUCKET_NAME;
-    private static final String REGION;
-    private static final Logger logger= LoggerFactory.getLogger(AmazoneS3Util.class);
+    private static final String BUCKET_NAME ="shop-udemy-course";
+    private static final String REGION = "ap-southeast-1";
 
-    static{
-        BUCKET_NAME=System.getenv("AWS_BUCKET_NAME");
-        REGION=System.getenv("AWS_REGION");
-    }
+    private static final Logger logger= LoggerFactory.getLogger(AmazoneS3Util.class);
 
     public static List<String> listObject(String folderName){
         S3Client client=S3Client.builder().build(); //khoi tao Server client ket noi voi AmazonS3 with access key, Secret key
