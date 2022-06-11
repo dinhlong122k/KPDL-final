@@ -17,10 +17,17 @@ import java.util.*;
 
 public class AmazoneS3Util {
 
-    private static final String BUCKET_NAME ="shop-udemy-course";
-    private static final String REGION = "ap-southeast-1";
+    // private static final String BUCKET_NAME ="shop-udemy-course";
+    // private static final String REGION = "ap-southeast-1";
 
+    private static final String BUCKET_NAME;
+    private static final String REGION;
     private static final Logger logger= LoggerFactory.getLogger(AmazoneS3Util.class);
+
+    static{
+        BUCKET_NAME=System.getenv("AWS_BUCKET_NAME");
+        REGION=System.getenv("AWS_REGION");
+    }
 
     public static List<String> listObject(String folderName){
         S3Client client=S3Client.builder().build(); //khoi tao Server client ket noi voi AmazonS3 with access key, Secret key
