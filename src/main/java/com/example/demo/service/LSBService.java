@@ -224,7 +224,22 @@ public class LSBService {
             byte b[] = new byte[len];
             for(int i=0; i<len; i++)
                 b[i] = extractByte(image, i*8+32, 0);
-            messageEmbedded= new String(b);
+            messageEmbedded= new String(b);  
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return messageEmbedded;
+    }
+
+    public String decodeMessage(BufferedImage image) throws IOException{
+        String messageEmbedded =null;
+        try{
+            int len = extractInteger(image, 0, 0);
+            byte b[] = new byte[len];
+            for(int i=0; i<len; i++)
+                b[i] = extractByte(image, i*8+32, 0);
+            messageEmbedded= new String(b);  
         }catch (Exception ex){
             ex.printStackTrace();
         }

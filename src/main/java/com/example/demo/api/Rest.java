@@ -11,9 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.URL;
 
 @RestController
 public class Rest {
@@ -129,5 +132,19 @@ public class Rest {
         }
 
         return  response;
+    }
+
+    @RequestMapping(value = "/decryptLsb1",method = RequestMethod.POST,produces = "application/json")
+    public Response DecryptMessageLSB(@RequestBody Response url) throws Exception{
+        Response response=new Response();
+        try{
+            URL urlImage=new URL(url.getText());
+            BufferedImage image= ImageIO.read(urlImage);
+            String text =lsbService.decodeMessage(image);
+            response.setText(text);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return response;
     }
 }
