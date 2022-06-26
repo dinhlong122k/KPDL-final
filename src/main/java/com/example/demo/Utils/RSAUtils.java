@@ -15,9 +15,10 @@ public class RSAUtils {
     public static PublicKey getPublicKey(String base64PublicKey){
         PublicKey publicKey = null;
         try{
+            //convert từ string trở lại thành public key
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64PublicKey.getBytes()));
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            publicKey = keyFactory.generatePublic(keySpec);
+            publicKey = keyFactory.generatePublic(keySpec); //
             return publicKey;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -29,6 +30,7 @@ public class RSAUtils {
 
     public static PrivateKey getPrivateKey(String base64PrivateKey){
         PrivateKey privateKey = null;
+        //convert string to privatekey
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64PrivateKey.getBytes()));
         KeyFactory keyFactory = null;
         try {
@@ -47,15 +49,17 @@ public class RSAUtils {
     public static byte[] encrypt(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(publicKey));
-        return cipher.doFinal(data.getBytes());
+        return cipher.doFinal(data.getBytes()); //encrypt text dựa trên cipher đã được khởi tạo
     }
 
     public static String decrypt(byte[] data, PrivateKey privateKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        return new String(cipher.doFinal(data));
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding"); //Cipher sẽ cung cấp chức năng của mật mã để giải mã và mã hoá
+        cipher.init(Cipher.DECRYPT_MODE, privateKey); //khởi tạo cipher với key cho mode encrypt, decrypt, key wrapping và key unwrapping
+        return new String(cipher.doFinal(data)); //decrypt text
     }
 
+
+    //decrypt text đã được mã hoá
     public static String decrypt(String data, String base64PrivateKey) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
 
         PrivateKey privateKey=getPrivateKey(base64PrivateKey);

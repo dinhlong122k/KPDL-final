@@ -73,15 +73,13 @@ public class Rest {
         Response response=new Response();
 
         try{
+
             String ext1= FilenameUtils.getExtension(multiPartFile.getOriginalFilename());
 //            AmazoneS3Util.uploadFile("thcs",multiPartFile.getOriginalFilename(),multiPartFile.getInputStream());
+            //kiểm tra extension của file đúng định dạng
             if(ext1.equals("jpg") || ext1.equals("png") || ext1.equals("jpeg")){
                 String url= service.addWaterMarkImage(multiPartFile);
                 response.setText(url);
-            }
-
-            else if(ext1.equals("pdf")){
-                service.addWatermarkPDF(multiPartFile);
             }else{
                 response.setText("Not correct extension");
             }
@@ -95,15 +93,10 @@ public class Rest {
     public Response EncryptMessageImage(HttpServletRequest request) throws Exception{
         Response response=new Response();
         try{
-//            int[] bits=lsbService.bit_Msg("body.getText()");
-//            System.out.println("msg in file: " + "body.getText()");
-//            BufferedImage buff= lsbService.readImage(multipartFile);
-//            lsbService.hideTheMessage(bits,buff);
-
-
-
 
             // ----------------- LSB 2---------------------------//
+
+            //Lấy file và text từ request
             String text =request.getParameter("text");
             MultipartHttpServletRequest mulrequest= (MultipartHttpServletRequest) request;
             MultipartFile multipartFile= mulrequest.getFile("file");

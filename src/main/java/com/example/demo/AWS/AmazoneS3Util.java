@@ -52,12 +52,17 @@ public class AmazoneS3Util {
 
 
     public static void uploadFile(String folderName, String fileName, InputStream inputStream){
+
+        //Khởi tạo S3Client của AWS S3
         S3Client client=S3Client.builder().build();
 
+        //định nghĩa bucket và role được sử dụng
         PutObjectRequest request=PutObjectRequest.builder().
                 bucket(BUCKET_NAME).key(folderName + "/" +fileName).acl("public-read").build();
         try{
             int contentLength = inputStream.available();
+
+            //put ảnh lên
             client.putObject(request, RequestBody.fromInputStream(inputStream,contentLength));
         }catch (IOException ex){
             logger.error("Could not upload file to Amazon S3",ex);

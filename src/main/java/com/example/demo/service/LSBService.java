@@ -12,113 +12,6 @@ import java.io.*;
 @Service
 public class LSBService {
 
-//    public BufferedImage readImage(MultipartFile multipartFile){
-//        BufferedImage buff =null;
-//        try{
-//            buff = ImageIO.read(multipartFile.getInputStream());
-//
-//        }catch (Exception ex){
-//            ex.printStackTrace();
-//        }
-//
-//        return buff;
-//    }
-//
-//    public int[] bit_Msg(String msg){
-//        int j=0;
-//        int[] b_msg=new int[msg.length()*8];
-//        for(int i=0;i<msg.length();i++){
-//            int x=msg.charAt(i);
-//            String x_s=Integer.toBinaryString(x);
-//            while(x_s.length()!=8){
-//                x_s='0'+x_s;
-//            }
-//            System.out.println("dec value for "+x +" is "+x_s);
-//
-//            for(int i1=0;i1<8;i1++) {
-//                b_msg[j] = Integer.parseInt(String.valueOf(x_s.charAt(i1)));
-//                j++;
-//            };
-//        }
-//
-//        return b_msg;
-//    }
-//
-//    public void hideTheMessage (int[] bits, BufferedImage theImage) throws Exception {
-//        File file=new File("C:\\result.jpg");
-//        BufferedImage sten_img = null;
-//        int bit_l = bits.length / 8;
-//        int[] bl_msg = new int[8];
-//        System.out.println("bit lent " + bit_l);
-//        String bl_s = Integer.toBinaryString(bit_l);
-//        while (bl_s.length() != 8) {
-//            bl_s = '0' + bl_s;
-//        }
-//        for (int i1 = 0; i1 < 8; i1++) {
-//            bl_msg[i1] = Integer.parseInt(String.valueOf(bl_s.charAt(i1)));
-//        }
-//        ;
-//        int j = 0;
-//        int b = 0;
-//        int currentBitEntry = 8;
-//
-//        for (int x = 0; x < theImage.getWidth(); x++) {
-//            for (int y = 0; y < theImage.getHeight(); y++) {
-//                if (x == 0 && y < 8) {
-//                    int currentPixel = theImage.getRGB(x, y);
-//                    int ori = currentPixel;
-//                    int red = currentPixel >> 16;
-//                    red = red & 255;
-//                    int green = currentPixel >> 8;
-//                    green = green & 255;
-//                    int blue = currentPixel;
-//                    blue = blue & 255;
-//                    String x_s = Integer.toBinaryString(blue);
-//                    String sten_s = x_s.substring(0, x_s.length() - 1);
-//                    sten_s = sten_s + Integer.toString(bl_msg[b]);
-//
-//                    //j++;
-//                    int temp = Integer.parseInt(sten_s, 2);
-//                    int s_pixel = Integer.parseInt(sten_s, 2);
-//                    int a = 255;
-//                    int rgb = (a << 24) | (red << 16) | (green << 8) | s_pixel;
-//                    theImage.setRGB(x, y, rgb);
-//                    //System.out.println("original "+ori+" after "+theImage.getRGB(x, y));
-//                    ImageIO.write(theImage, "png", file);
-//                    b++;
-//
-//                } else if (currentBitEntry < bits.length + 8) {
-//
-//                    int currentPixel = theImage.getRGB(x, y);
-//                    int ori = currentPixel;
-//                    int red = currentPixel >> 16;
-//                    red = red & 255;
-//                    int green = currentPixel >> 8;
-//                    green = green & 255;
-//                    int blue = currentPixel;
-//                    blue = blue & 255;
-//                    String x_s = Integer.toBinaryString(blue);
-//                    String sten_s = x_s.substring(0, x_s.length() - 1);
-//                    sten_s = sten_s + Integer.toString(bits[j]);
-//                    j++;
-//                    int temp = Integer.parseInt(sten_s, 2);
-//                    int s_pixel = Integer.parseInt(sten_s, 2);
-//
-//                    int a = 255;
-//                    int rgb = (a << 24) | (red << 16) | (green << 8) | s_pixel;
-//                    theImage.setRGB(x, y, rgb);
-//                    ImageIO.write(theImage, "png",file );
-//
-//                    currentBitEntry++;
-//                }
-//            }
-//        }
-//
-//    }
-
-
-
-
     // -------------------------------- LSB 2 ENCRYPT----------------------------------//
     BufferedImage sourceImage= null;
     BufferedImage embeddedImage=null;
@@ -127,6 +20,8 @@ public class LSBService {
         String name="";
         String url="";
         try{
+
+            //chuyển hình ảnh thành giá trị bit
             sourceImage= ImageIO.read(multipartFile.getInputStream());
             embeddedImage= sourceImage.getSubimage(0,0,sourceImage.getWidth(),sourceImage.getHeight());
 
@@ -142,18 +37,26 @@ public class LSBService {
     private void embeddedMessage(BufferedImage img, String message){
         int messageLength = message.length();
 
+        //lấy giá trị thông tin hình ảnh
         int imageWidth = img.getWidth(), imageHeight = img.getHeight(),
                 imageSize =imageWidth * imageHeight;
 
+        //chuyen hinh anh sang dang bit
         embeddedInteger(img, messageLength, 0 ,0);
 
+
+        //chuyen chuỗi cần giấu tin sang dạng bytes
         byte b[] = message.getBytes();
 
         for(int i=0;i<b.length; i++){
+
+            //lay ra gia tri của chuỗi từ vị trí i*8 +32(vì 32 kí tự đầu dành cho độ dài của chuỗi)
             embeddedByte(img, b[i], i* 8 +32,0 );
         }
     }
 
+
+    //thay byte của message vào ảnh
     private void embeddedByte(BufferedImage img, byte b, int start, int storageBit) {
         int maxX = img.getWidth(), maxY = img.getHeight(),
                 startX = start/maxY, startY = start - startX*maxY, count=0;
@@ -167,6 +70,8 @@ public class LSBService {
         }
     }
 
+
+    //đưa độ dài của chuỗi vào trong bức ảnh
     private void embeddedInteger(BufferedImage img, int n, int start, int storageBit){
         int maxX = img.getWidth(), maxY = img.getHeight(),
                 startX =start/maxY, startY =start- startX* maxY, count =0;
@@ -181,8 +86,9 @@ public class LSBService {
         }
     }
 
+    //kiem tra neu như giá trị =0 thì trả về bit là 0, ngược lại trả về bit là 1
     private int getBitValue(int n, int location) {
-        int v = n & (int) Math.round(Math.pow(2, location));
+        int v = n & (int) Math.round(Math.pow(2, location));  //bitwise AND (convert n- độ dài chuỗi sang bit và math_round) sau đó so sánh để gán giá trị là 0 hoặc 1
         return v==0?0:1;
     }
 
@@ -191,9 +97,9 @@ public class LSBService {
         if(bv == bit)
             return n;
         if(bv == 0 && bit == 1)
-            n |= toggle;
+            n |= toggle; //set n là 1
         else if(bv == 1 && bit == 0)
-            n ^= toggle;
+            n ^= toggle; //set n là 0
         return n;
     }
 
@@ -247,6 +153,8 @@ public class LSBService {
         return messageEmbedded;
     }
 
+
+    //lấy ra độ dài của chuỗi
     private int extractInteger(BufferedImage img, int start, int storageBit) {
         int maxX = img.getWidth(), maxY = img.getHeight(),
                 startX = start/maxY, startY = start - startX*maxY, count=0;
@@ -261,6 +169,8 @@ public class LSBService {
         return length;
     }
 
+
+    //lấy ra các byte chuỗi
     private byte extractByte(BufferedImage img, int start, int storageBit) {
         int maxX = img.getWidth(), maxY = img.getHeight(),
                 startX = start/maxY, startY = start - startX*maxY, count=0;
